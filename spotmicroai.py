@@ -10,7 +10,7 @@ import time
 import pybullet as p
 import math
 import numpy as np
-from Kinematics.kinematics import Kinematic
+from kinematics import Kinematic
 from enum import Enum
 
 class RobotState(Enum):
