@@ -92,9 +92,7 @@ def main(id, command_status):
         print(robot.getAngle())
 
         if result_dict['StartStepping']:
-            print('i walkaaa')
             robot.feetPosition(trotting.positions(d-3, result_dict))
-            print('i walk')
         else:
             robot.feetPosition(Lp)
 
