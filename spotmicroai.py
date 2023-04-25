@@ -147,7 +147,7 @@ class Robot:
 
     def loadModels(self):
         p.configureDebugVisualizer(p.COV_ENABLE_RENDERING, 0)
-        p.setGravity(0, 0, -9.81)
+        p.setGravity(0, 0, -9.8)
 
         orn = p.getQuaternionFromEuler([math.pi/30*0, 0*math.pi/50, 0])
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
