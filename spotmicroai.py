@@ -10,7 +10,7 @@ import time
 import pybullet as p
 import math
 import numpy as np
-from kinematics import Kinematic
+from Kinematics.kinematics import Kinematic
 from enum import Enum
 
 class RobotState(Enum):
@@ -290,8 +290,10 @@ class Robot:
             return False
         if self.rotateCamera:
             p.resetDebugVisualizerCamera(0.7,self.t*10,-5,bodyPos)
+        
         # Calculate Angles with the input of FeetPos,BodyRotation and BodyPosition
         self.angles = self.kin.calcIK(self.Lp, self.rot, self.pos)
+
         # list comprehension usage
         # [word for sentence in text for word in sentence]
         # print([ (angle * 180 / 3.1415) for singleFootAngle in angles for angle in singleFootAngle ])

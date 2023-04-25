@@ -14,6 +14,6 @@
 * `space` : Stop
 ```
 
-Each time you press a button, it will move harder in that direction
+Each time you press a button, it will move harder in that direction.
 
 
