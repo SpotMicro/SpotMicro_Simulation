@@ -77,14 +77,14 @@ class TrottingGait:
         self.maxSl=2
         self.bodyPos=(0,100,0)
         self.bodyRot=(0,0,0)
-        self.t0=0 # senseless i guess
-        self.t1=510
-        self.t2=00
-        self.t3=185
-        self.Sl=0.0
+        self.t0=100 # senseless i guess
+        self.t1=300
+        self.t2=100
+        self.t3=300
+        self.Sl=30
         self.Sw=0
         self.Sh=60
-        self.Sa=0
+        self.Sa=2
         self.Spf=87
         self.Spr=77
 
@@ -108,9 +108,11 @@ class TrottingGait:
     calculates the Lp - LegPosition for the configured gait for time t and original Lp of x,y,z
     """
     def calcLeg(self, t, startLp, endLp):
-        if(t<self.t1): # drag foot over ground
+        if(t<self.t0): # TODO: remove t0 and t2 - not practical
+            return startLp
+        elif(t<self.t0+self.t1): # drag foot over ground
 
-            td=t
+            td=t-self.t0
             tp=1/(self.t1/td)
             diffLp=endLp-startLp
             curLp=startLp+diffLp*tp
@@ -121,19 +123,28 @@ class TrottingGait:
             #Tlm = np.array([[0,0,0,-self.Rc[0]],[0,0,0,-self.Rc[1]],[0,0,0,-self.Rc[2]],[0,0,0,0]])
             curLp=Ry.dot(curLp)
             return curLp
-        
-        elif(t<self.t1+self.t3): # Lift foot
-            td=t-(self.t1)
+        elif(t<self.t0+self.t1+self.t2):
+            return endLp
+        elif(t<self.t0+self.t1+self.t2+self.t3): # Lift foot
+            td=t-(self.t0+self.t1+self.t2)
             tp=1/(self.t3/td)
             diffLp=startLp-endLp
             curLp=endLp+diffLp*tp
             curLp[1]+=self.Sh*math.sin(math.pi*tp)
             return curLp
         
+    def stayMove(self,t,x,y,z):
+        startLp=np.array([x,y,z-self.Sw,1])
+        endY=0 #-0.8 # delta y to jump a bit before lifting legs
+        endLp=np.array([x,y+endY,z+self.Sw,1])
+
+        return self.calcLeg(t,startLp,endLp)
+
     def fowordMove(self,t,x,y,z):
         startLp=np.array([x-self.Sl/2.0,y,z-self.Sw,1])
         endY=0 #-0.8 # delta y to jump a bit before lifting legs
         endLp=np.array([x+self.Sl/2,y+endY,z+self.Sw,1])
+
         return self.calcLeg(t,startLp,endLp)
         
     def backMove(self,t,x,y,z):
@@ -160,9 +171,9 @@ class TrottingGait:
         startLp=np.array([x,y,z-self.Sw,1])
         endY=0
         if x > 0:
-            endLp=np.array([math.sqrt(abs(self.Sra-(z-self.Sl/2)**2)), y+endY, z-self.Sl, 1])
+            endLp=np.array([math.sqrt(abs(self.Sra-(z-self.Sl)**2)), y+endY, z-self.Sl, 1])
         else:
-            endLp=np.array([-1*math.sqrt(abs(self.Sra-(z+self.Sl/2)**2)), y+endY, z+self.Sl, 1])
+            endLp=np.array([-1*math.sqrt(abs(self.Sra-(z+self.Sl)**2)), y+endY, z+self.Sl, 1])
 
         return self.calcLeg(t,startLp,endLp)
 
@@ -198,18 +209,18 @@ class TrottingGait:
         self.t2=p.readUserDebugParameter(self.IDt2)
         self.t3=p.readUserDebugParameter(self.IDt3)
 
-        # Tt=(self.t0+self.t1+self.t2+self.t3)
+        Tt=(self.t0+self.t1+self.t2+self.t3)
         # Tt2=Tt/2
 
         # td=(t*1000)%Tt
         # t2=(t*1000-Tt2)%Tt
         # rtd=(t*1000)%Tt
         # rt2=(t*1000-Tt2)%Tt
-        Tt=(self.t1+self.t3)
+        # Tt=(self.t1+self.t3)
         Tt4=Tt/4
         td=(t*1000)%Tt
-        t2=(t*1000-Tt4)%Tt
-        rtd=(t*1000-Tt4*2)%Tt
+        t2=(t*1000-Tt4*2)%Tt
+        rtd=(t*1000-Tt4)%Tt
         rt2=(t*1000-Tt4*3)%Tt
         
         Fx=p.readUserDebugParameter(self.IDfrontOffset)

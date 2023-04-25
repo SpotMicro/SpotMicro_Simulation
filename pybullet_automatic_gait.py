@@ -52,13 +52,13 @@ def consoleClear():
 
 robot=spotmicroai.Robot(False,True,reset)
 
-spurWidth=robot.W/2+20
+spurWidth=robot.W/2+30
 stepLength=0
 stepHeight=72
 iXf=120
 iXb=-132
 
-IDheight = p.addUserDebugParameter("height", -40, 90, 20)
+IDheight = p.addUserDebugParameter("height", -40, 90, 50)
 
 Lp = np.array([[iXf, -100, spurWidth, 1], [iXf, -100, -spurWidth, 1],
 [-50, -100, spurWidth, 1], [-50, -100, -spurWidth, 1]])
@@ -92,7 +92,7 @@ def main(id, command_status):
         print(robot.getAngle())
 
         if result_dict['StartStepping']:
-            robot.feetPosition(trotting.positions(d-3, result_dict))
+            robot.feetPosition(trotting.positions(d, result_dict))
         else:
             robot.feetPosition(Lp)
 
