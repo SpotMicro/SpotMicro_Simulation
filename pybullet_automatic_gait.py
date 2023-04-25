@@ -22,9 +22,9 @@ import pybullet_data
 import spotmicroai
 
 from multiprocessing import Process
-from multiprocess_kb import KeyInterrupt
+from Common.multiprocess_kb import KeyInterrupt
 
-import kinematics as kn
+import Kinematics.kinematics as kn
 from kinematicMotion import KinematicMotion, TrottingGait
 
 rtime=time.time()
@@ -50,7 +50,7 @@ def consoleClear():
     else: 
         _ = system('clear') 
 
-robot=spotmicroai.Robot(True,True,reset)
+robot=spotmicroai.Robot(False,True,reset)
 
 spurWidth=robot.W/2+20
 stepLength=0
